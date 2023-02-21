@@ -6,8 +6,8 @@
 
 ### OPTIONS AND VARIABLES ###
 
-dotfilesrepo="https://github.com/lukesmithxyz/voidrice.git"
-progsfile="https://raw.githubusercontent.com/LukeSmithxyz/LARBS/master/static/progs.csv"
+dotfilesrepo="https://github.com/NicholasasaurusRex/dotfiles.git"
+progsfile="https://raw.githubusercontent.com/NicholasasaurusRex/CABS/CABS/progs.csv"
 aurhelper="yay"
 repobranch="master"
 export TERM=ansi

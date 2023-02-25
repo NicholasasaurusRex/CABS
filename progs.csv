@@ -27,7 +27,6 @@ A,lf-git, A terminal file manager inspired by ranger
 ,ncmpcpp, a terminal music player insterface that uses ncurses
 ,newsboat, Terminal RSS feed reader
 A,librewolf-bin, Community-maintained fork of Firefox focused on privacy security and freedom
-A,arkenfox-user.js, Firefox privacy security and anti-tracking: a comprehensive user.js template for configuration and hardening
 ,noto-fonts, Google Noto TTF fonts
 ,noto-fonts-emoji, Google Noto emoji fonts
 ,ntfs-3g, NTFS filesystem driver and utilities

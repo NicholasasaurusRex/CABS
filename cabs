@@ -7,9 +7,9 @@
 ### OPTIONS AND VARIABLES ###
 
 dotfilesrepo="https://github.com/NicholasasaurusRex/dotfiles.git"
-progsfile="https://raw.githubusercontent.com/NicholasasaurusRex/CABS/CABS/progs.csv"
+progsfile="https://raw.githubusercontent.com/NicholasasaurusRex/CABS/base/progs.csv"
 aurhelper="yay"
-repobranch="master"
+repobranch="base"
 export TERM=ansi
 
 ### FUNCTIONS ###
@@ -253,6 +253,8 @@ installffaddons(){
 }
 
 finalize() {
+  sudo cp /root/arch3 /home/$name
+  sudo chown -R $name:wheel /home/$name/arch3
 	whiptail --title "All done!" \
 		--msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t Luke" 13 80
 }

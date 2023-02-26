@@ -26,20 +26,20 @@ error() {
 
 welcomemsg() {
 	whiptail --title "Welcome!" \
-		--msgbox "Welcome to Luke's Auto-Rice Bootstrapping Script!\\n\\nThis script will automatically install a fully-featured Linux desktop, which I use as my main machine.\\n\\n-Luke" 10 60
+		--msgbox "Welcome to Codes's Auto Bootstrapping Script!\\n\\nThis script will automatically install a fully-featured Linux desktop" 10 60
 
-	whiptail --title "Important Note!" --yes-button "All ready!" \
-		--no-button "Return..." \
-		--yesno "Be sure the computer you are using has current pacman updates and refreshed Arch keyrings.\\n\\nIf it does not, the installation of some programs might fail." 8 70
+	whiptail --title "Important Note!" --yes-button "Continue" \
+		--no-button "Leave" \
+		--yesno "Ensure this computer has current pacman updates and refreshed Arch keyrings.\\n\\nIf not, the installation of some programs may fail." 8 70
 }
 
 getuserandpass() {
 	# Prompts user for new username an password.
-	name=$(whiptail --inputbox "First, please enter a name for the user account." 10 60 3>&1 1>&2 2>&3 3>&1) || exit 1
+	name=$(whiptail --inputbox "Enter a user account." 10 60 3>&1 1>&2 2>&3 3>&1) || exit 1
 	while ! echo "$name" | grep -q "^[a-z_][a-z0-9_-]*$"; do
 		name=$(whiptail --nocancel --inputbox "Username not valid. Give a username beginning with a letter, with only lowercase letters, - or _." 10 60 3>&1 1>&2 2>&3 3>&1)
 	done
-	pass1=$(whiptail --nocancel --passwordbox "Enter a password for that user." 10 60 3>&1 1>&2 2>&3 3>&1)
+	pass1=$(whiptail --nocancel --passwordbox "Enter a password." 10 60 3>&1 1>&2 2>&3 3>&1)
 	pass2=$(whiptail --nocancel --passwordbox "Retype password." 10 60 3>&1 1>&2 2>&3 3>&1)
 	while ! [ "$pass1" = "$pass2" ]; do
 		unset pass2
@@ -51,14 +51,14 @@ getuserandpass() {
 usercheck() {
 	! { id -u "$name" >/dev/null 2>&1; } ||
 		whiptail --title "WARNING" --yes-button "CONTINUE" \
-			--no-button "No wait..." \
-			--yesno "The user \`$name\` already exists on this system. LARBS can install for a user already existing, but it will OVERWRITE any conflicting settings/dotfiles on the user account.\\n\\nLARBS will NOT overwrite your user files, documents, videos, etc., so don't worry about that, but only click <CONTINUE> if you don't mind your settings being overwritten.\\n\\nNote also that LARBS will change $name's password to the one you just gave." 14 70
+			--no-button "EXIT" \
+			--yesno "The user \`$name\` already exists on this system. CABS can install for an existing user, but it will OVERWRITE any conflicting settings/dotfiles on the account.\\n\\nCABS will NOT overwrite your user files, documents, videos, etc., click <CONTINUE> if you don't mind your settings being overwritten.\\n\\nNote CABS will also change $name's password to the one you just provided." 14 70
 }
 
 preinstallmsg() {
-	whiptail --title "Let's get this party started!" --yes-button "Let's go!" \
-		--no-button "No, nevermind!" \
-		--yesno "The rest of the installation will now be totally automated, so you can sit back and relax.\\n\\nIt will take some time, but when done, you can relax even more with your complete system.\\n\\nNow just press <Let's go!> and the system will begin installation!" 13 60 || {
+	whiptail --title "Install" --yes-button "CONTINUE" \
+		--no-button "EXIT" \
+		--yesno "The rest of the installation will be automated, if you chose to continue.\\n\\nThe installation may take some time. Please wait while CABS installs the system.\\n\\npress <CONTINUE> to begin the installation." 13 60 || {
 		clear
 		exit 1
 	}
@@ -83,7 +83,7 @@ refreshkeys() {
 		pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
 		;;
 	*)
-		whiptail --infobox "Enabling Arch Repositories for more a more extensive software collection..." 7 40
+		whiptail --infobox "Enabling Arch Repositories to have a more extensive software collection..." 7 40
 		if ! grep -q "^\[universe\]" /etc/pacman.conf; then
 			echo "[universe]
 Server = https://universe.artixlinux.org/\$arch
@@ -126,7 +126,7 @@ manualinstall() {
 
 maininstall() {
 	# Installs all needed programs from main repo.
-	whiptail --title "LARBS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 9 70
+	whiptail --title "CABS Installation" --infobox "Installing \`$1\` ($n of $total). $1 $2" 9 70
 	installpkg "$1"
 }
 
@@ -134,7 +134,7 @@ gitmakeinstall() {
 	progname="${1##*/}"
 	progname="${progname%.git}"
 	dir="$repodir/$progname"
-	whiptail --title "LARBS Installation" \
+	whiptail --title "CABS Installation" \
 		--infobox "Installing \`$progname\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 8 70
 	sudo -u "$name" git -C "$repodir" clone --depth 1 --single-branch \
 		--no-tags -q "$1" "$dir" ||
@@ -149,14 +149,14 @@ gitmakeinstall() {
 }
 
 aurinstall() {
-	whiptail --title "LARBS Installation" \
+	whiptail --title "CABS Installation" \
 		--infobox "Installing \`$1\` ($n of $total) from the AUR. $1 $2" 9 70
 	echo "$aurinstalled" | grep -q "^$1$" && return 1
 	sudo -u "$name" $aurhelper -S --noconfirm "$1" >/dev/null 2>&1
 }
 
 pipinstall() {
-	whiptail --title "LARBS Installation" \
+	whiptail --title "CABS Installation" \
 		--infobox "Installing the Python package \`$1\` ($n of $total). $1 $2" 9 70
 	[ -x "$(command -v "pip")" ] || installpkg python-pip >/dev/null 2>&1
 	yes | pip install "$1"
@@ -193,18 +193,8 @@ putgitrepo() {
 	sudo -u "$name" cp -rfT "$dir" "$2"
 }
 
-#vimplugininstall() {
-	# TODO remove shortcuts error message
-	# Installs vim plugins.
-#	whiptail --infobox "Installing neovim plugins..." 7 60
-#	mkdir -p "/home/$name/.config/nvim/autoload"
-#	curl -Ls "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" >  "/home/$name/.config/nvim/autoload/plug.vim"
-#	chown -R "$name:wheel" "/home/$name/.config/nvim"
-#	sudo -u "$name" nvim -c "PlugInstall|q|q"
-#}
-
 installffaddons(){
-	addonlist="ublock-origin decentraleyes istilldontcareaboutcookies vim-vixen"
+	addonlist="ublock-origin decentraleyes istilldontcareaboutcookies vim-vixen firefox-translations"
 	addontmp="$(mktemp -d)"
 	trap "rm -fr $addontmp" HUP INT QUIT TERM PWR EXIT
 	IFS=' '
@@ -227,8 +217,8 @@ installffaddons(){
 finalize() {
   sudo cp /root/arch3 /home/$name
   sudo chown -R $name:wheel /home/$name/arch3
-	whiptail --title "All done!" \
-		--msgbox "Congrats! Provided there were no hidden errors, the script completed successfully and all the programs and configuration files should be in place.\\n\\nTo run the new graphical environment, log out and log back in as your new user, then run the command \"startx\" to start the graphical environment (it will start automatically in tty1).\\n\\n.t Luke" 13 80
+	whiptail --title "Complete!" \
+		--msgbox "Provided there were no hidden errors, the script completed successfully. All the programs and configuration files should have installed.\\n\\nPlease log out and log back in as your new user, To run the new graphical environment. Then run the command \"startx\" to start the graphical environment (it should start automatically in tty1)." 13 80
 }
 
 ### THE ACTUAL SCRIPT ###
@@ -237,7 +227,7 @@ finalize() {
 
 # Check if user is root on Arch distro. Install whiptail.
 pacman --noconfirm --needed -Sy libnewt ||
-	error "Are you sure you're running this as the root user, are on an Arch-based distribution and have an internet connection?"
+	error "Are you sure you're the root user, and on an Arch-based distribution with an internet connection?"
 
 # Welcome user and pick dotfiles.
 welcomemsg || error "User exited."
@@ -258,12 +248,12 @@ refreshkeys ||
 	error "Error automatically refreshing Arch keyring. Consider doing so manually."
 
 for x in curl ca-certificates base-devel git ntp zsh; do
-	whiptail --title "LARBS Installation" \
+	whiptail --title "CABS Installation" \
 		--infobox "Installing \`$x\` which is required to install and configure other programs." 8 70
 	installpkg "$x"
 done
 
-whiptail --title "LARBS Installation" \
+whiptail --title "CABS Installation" \
 	--infobox "Synchronizing system time to ensure successful and secure installation of software..." 8 70
 ntpd -q -g >/dev/null 2>&1
 
@@ -296,9 +286,6 @@ installationloop
 putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
 rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
 
-# Install vim plugins if not alread present.
-#[ ! -f "/home/$name/.config/nvim/autoload/plug.vim" ] && vimplugininstall
-
 # Most important command! Get rid of the beep!
 rmmod pcspkr
 echo "blacklist pcspkr" >/etc/modprobe.d/nobeep.conf
@@ -327,7 +314,7 @@ EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 
 # All this below to get Librewolf installed with add-ons and non-bad settings.
 
-whiptail --infobox "Setting browser privacy settings and add-ons..." 7 60
+whiptail --infobox "Setting browser settings and add-ons..." 7 60
 
 browserdir="/home/$name/.librewolf"
 profilesini="$browserdir/profiles.ini"

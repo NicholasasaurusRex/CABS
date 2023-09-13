@@ -94,6 +94,7 @@ G,https://github.com/NicholasasaurusRex/dwm.git, My build of dwm
 ,zsh-history-substring-search, ZSH port of Fish history search
 ,zsh-autosuggestions, Fish-like autosuggestions for zsh
 ,zsh-theme-powerlevel10k,  	Powerlevel10k is a theme for Zsh. It emphasizes speed flexibility and out-of-the-box experience.
+A,ipinfo-cli, Command Line Interface for the IPinfo API (IP geolocation and other types of IP data)
 A,ookla-speedtest-bin, Speedtest CLI by Ookla
 A,zsh-fast-syntax-highlighting, Optimized and extended zsh-syntax-highlighting
 A,colorpicker, Click on a pixel on your screen and print its color value in RGB. Written for X11

@@ -84,6 +84,7 @@ G,https://github.com/NicholasasaurusRex/dwm.git, My build of dwm
 ,thunderbird, An email cliet
 ,ufw, Uncomplicated and easy to use CLI tool for managing a netfilter firewall
 ,units, Converts between different units
+,cifs-utils, CIFS filesystem user-space tools
 ,usbutils, A collection of USB tools to query connected USB devices
 ,python-pynvim, Python client for Neovim
 ,nvtop, GPUs process monitoring for AMD Intel and NVIDIA

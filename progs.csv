@@ -91,7 +91,7 @@ G,https://github.com/NicholasasaurusRex/dwm.git, My build of dwm
 ,nvtop, GPUs process monitoring for AMD Intel and NVIDIA
 ,cmake, A cross-platform open-source make system
 ,glow, A command line markdown viewer
-,nextcloud-client, Nextcloud desktop client
+,ethtool, Utility for controlling network drivers and hardware
 ,gocryptfs, An Encrypted overlay filesystem written in Go
 ,wireguard-tools, A vpn tool
 ,rkhunter, Checks machines for the presence of rootkits and other unwanted tools

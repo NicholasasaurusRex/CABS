@@ -94,7 +94,6 @@ G,https://github.com/NicholasasaurusRex/dwm.git, My build of dwm
 ,glow, A command line markdown viewer
 ,ethtool, Utility for controlling network drivers and hardware
 ,gocryptfs, An Encrypted overlay filesystem written in Go
-,wireguard-tools, A vpn tool
 ,rkhunter, Checks machines for the presence of rootkits and other unwanted tools
 ,lynis, Security and system auditing tool to harden Unix/Linux systems
 ,zsh, A very advanced and programmable command interpreter (shell) for UNIX

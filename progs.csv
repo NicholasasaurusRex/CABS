@@ -82,6 +82,7 @@ G,https://github.com/NicholasasaurusRex/dwm.git, My build of dwm
 ,ttf-inconsolata, Monospace font for pretty code listings and for the terminal
 ,ttf-joypixels, Emoji as a Service (formerly EmojiOne)
 ,thunderbird, An email cliet
+,wireguard-tools, A next generation secure network tunnel - tools for configuration
 ,ufw, Uncomplicated and easy to use CLI tool for managing a netfilter firewall
 ,units, Converts between different units
 ,nfs-utils, Support programs for Network File Systems

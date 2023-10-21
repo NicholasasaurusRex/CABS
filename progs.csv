@@ -15,7 +15,7 @@ A,lf-git, A terminal file manager inspired by ranger
 ,libnotify, Library for sending desktop notifications
 ,dunst, Customizable and lightweight notification-daemon
 ,exfat-utils, Utilities for exFAT file system
-,sxiv, Simple X Image Viewer
+,nsxiv, Neo (or New or Not) Simple (or Small or Suckless) X Image Viewer
 ,xwallpaper, Wallpaper setting utility for X
 ,ffmpeg, Complete solution to record convert and stream audio and video
 ,ffmpegthumbnailer, Lightweight video thumbnailer that can be used by file managers

@@ -96,6 +96,7 @@ G,https://github.com/NicholasasaurusRex/dwm.git, My build of dwm
 ,gocryptfs, An Encrypted overlay filesystem written in Go
 ,rkhunter, Checks machines for the presence of rootkits and other unwanted tools
 ,lynis, Security and system auditing tool to harden Unix/Linux systems
+,torbrowser-launcher, Securely and easily download verify install and launch Tor Browser in Linux
 ,zsh, A very advanced and programmable command interpreter (shell) for UNIX
 ,zsh-history-substring-search, ZSH port of Fish history search
 ,zsh-autosuggestions, Fish-like autosuggestions for zsh

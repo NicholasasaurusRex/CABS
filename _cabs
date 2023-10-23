@@ -9,7 +9,7 @@
 dotfilesrepo="https://github.com/NicholasasaurusRex/dotfiles.git"
 progsfile="https://raw.githubusercontent.com/NicholasasaurusRex/CABS/base/progs.csv"
 aurhelper="yay"
-repobranch="master"
+repobranch="base"
 export TERM=ansi
 
 ### FUNCTIONS ###
@@ -83,7 +83,7 @@ refreshkeys() {
 		pacman --noconfirm -S archlinux-keyring >/dev/null 2>&1
 		;;
 	*)
-		whiptail --infobox "Enabling Arch Repositories for more a more extensive software collection..." 7 40
+		whiptail --infobox "Enabling Arch Repositories to have a more extensive software collection..." 7 40
 		pacman --noconfirm --needed -S \
 			artix-keyring artix-archlinux-support >/dev/null 2>&1
 		grep -q "^\[extra\]" /etc/pacman.conf ||
@@ -122,7 +122,7 @@ gitmakeinstall() {
 	progname="${1##*/}"
 	progname="${progname%.git}"
 	dir="$repodir/$progname"
-	whiptail --title "CABSS Installation" \
+	whiptail --title "CABS Installation" \
 		--infobox "Installing \`$progname\` ($n of $total) via \`git\` and \`make\`. $(basename "$1") $2" 8 70
 	sudo -u "$name" git -C "$repodir" clone --depth 1 --single-branch \
 		--no-tags -q "$1" "$dir" ||
@@ -181,70 +181,30 @@ putgitrepo() {
 	sudo -u "$name" cp -rfT "$dir" "$2"
 }
 
-# vimplugininstall() {
-# 	# Installs vim plugins.
-# 	whiptail --infobox "Installing neovim plugins..." 7 60
-# 	mkdir -p "/home/$name/.config/nvim/autoload"
-# 	curl -Ls "https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim" >  "/home/$name/.config/nvim/autoload/plug.vim"
-# 	chown -R "$name:wheel" "/home/$name/.config/nvim"
-# 	sudo -u "$name" nvim -c "PlugInstall|q|q"
-# }
-
-makeuserjs(){
-	# Get the Arkenfox user.js and prepare it.
-	arkenfox="$pdir/arkenfox.js"
-	overrides="$pdir/user-overrides.js"
-	userjs="$pdir/user.js"
-	ln -fs "/home/$name/.config/firefox/larbs.js" "$overrides"
-	[ ! -f "$arkenfox" ] && curl -sL "https://raw.githubusercontent.com/arkenfox/user.js/master/user.js" > "$arkenfox"
-	cat "$arkenfox" "$overrides" > "$userjs"
-	chown "$name:wheel" "$arkenfox" "$userjs"
-	# Install the updating script.
-	mkdir -p /usr/local/lib /etc/pacman.d/hooks
-	cp "/home/$name/.local/bin/arkenfox-auto-update" /usr/local/lib/
-	chown root:root /usr/local/lib/arkenfox-auto-update
-	chmod 755 /usr/local/lib/arkenfox-auto-update
-	# Trigger the update when needed via a pacman hook.
-	echo "[Trigger]
-Operation = Upgrade
-Type = Package
-Target = firefox
-Target = librewolf
-Target = librewolf-bin
-[Action]
-Description=Update Arkenfox user.js
-When=PostTransaction
-Depends=arkenfox-user.js
-Exec=/usr/local/lib/arkenfox-auto-update" > /etc/pacman.d/hooks/arkenfox.hook
-}
-
 installffaddons(){
-	addonlist="ublock-origin decentraleyes istilldontcareaboutcookies privacy-badger17 vimium-ff darkreader simple-translate"
+	addonlist="ublock-origin decentraleyes istilldontcareaboutcookies vim-vixen firefox-translations"
 	addontmp="$(mktemp -d)"
 	trap "rm -fr $addontmp" HUP INT QUIT TERM PWR EXIT
 	IFS=' '
 	sudo -u "$name" mkdir -p "$pdir/extensions/"
 	for addon in $addonlist; do
-		if [ "$addon" = "ublock-origin" ]; then
-			addonurl="$(curl -sL https://api.github.com/repos/gorhill/uBlock/releases/latest | grep -E 'browser_download_url.*\.firefox\.xpi' | cut -d '"' -f 4)"
-		else
-			addonurl="$(curl --silent "https://addons.mozilla.org/en-US/firefox/addon/${addon}/" | grep -o 'https://addons.mozilla.org/firefox/downloads/file/[^"]*')"
-		fi
+		addonurl="$(curl --silent "https://addons.mozilla.org/en-US/firefox/addon/${addon}/" | grep -o 'https://addons.mozilla.org/firefox/downloads/file/[^"]*')"
 		file="${addonurl##*/}"
 		sudo -u "$name" curl -LOs "$addonurl" > "$addontmp/$file"
 		id="$(unzip -p "$file" manifest.json | grep "\"id\"")"
 		id="${id%\"*}"
 		id="${id##*\"}"
-		mv "$file" "$pdir/extensions/$id.xpi"
+		sudo -u "$name" mv "$file" "$pdir/extensions/$id.xpi"
 	done
-	chown -R "$name:$name" "$pdir/extensions"
 	# Fix a Vim Vixen bug with dark mode not fixed on upstream:
-	#sudo -u "$name" mkdir -p "$pdir/chrome"
-	#[ ! -f  "$pdir/chrome/userContent.css" ] && sudo -u "$name" echo ".vimvixen-console-frame { color-scheme: light !important; }
-##category-more-from-mozilla { display: none !important }" > "$pdir/chrome/userContent.css"
+	sudo -u "$name" mkdir -p "$pdir/chrome"
+	[ ! -f  "$pdir/chrome/userContent.css" ] && sudo -u "$name" echo ".vimvixen-console-frame { color-scheme: light !important; }
+#category-more-from-mozilla { display: none !important }" > "$pdir/chrome/userContent.css"
 }
 
 finalize() {
+  sudo cp /root/arch3 /home/$name
+  sudo chown -R $name:wheel /home/$name/arch3
 	whiptail --title "Complete!" \
 		--msgbox "Provided there were no hidden errors, the script completed successfully. All the programs and configuration files should have installed.\\n\\nPlease log out and log back in as your new user, To run the new graphical environment. Then run the command \"startx\" to start the graphical environment (it should start automatically in tty1)." 13 80
 }
@@ -255,7 +215,7 @@ finalize() {
 
 # Check if user is root on Arch distro. Install whiptail.
 pacman --noconfirm --needed -Sy libnewt ||
-	error "Are you sure you're running this as the root user, are on an Arch-based distribution and have an internet connection?"
+	error "Are you sure you're the root user, and on an Arch-based distribution with an internet connection?"
 
 # Welcome user and pick dotfiles.
 welcomemsg || error "User exited."
@@ -301,10 +261,7 @@ sed -Ei "s/^#(ParallelDownloads).*/\1 = 5/;/^#Color$/s/#//" /etc/pacman.conf
 # Use all cores for compilation.
 sed -i "s/-j2/-j$(nproc)/;/^#MAKEFLAGS/s/^#//" /etc/makepkg.conf
 
-manualinstall $aurhelper || error "Failed to install AUR helper."
-
-# Make sure .*-git AUR packages get updated automatically.
-$aurhelper -Y --save --devel
+manualinstall yay || error "Failed to install AUR helper."
 
 # The command that does all the installing. Reads the progs.csv file and
 # installs each needed program the way required. Be sure to run this only after
@@ -316,9 +273,6 @@ installationloop
 # other unnecessary files.
 putgitrepo "$dotfilesrepo" "/home/$name" "$repobranch"
 rm -rf "/home/$name/.git/" "/home/$name/README.md" "/home/$name/LICENSE" "/home/$name/FUNDING.yml"
-
-# Install vim plugins if not alread present.
-# [ ! -f "/home/$name/.config/nvim/autoload/plug.vim" ] && vimplugininstall
 
 # Most important command! Get rid of the beep!
 rmmod pcspkr
@@ -348,7 +302,7 @@ EndSection' >/etc/X11/xorg.conf.d/40-libinput.conf
 
 # All this below to get Librewolf installed with add-ons and non-bad settings.
 
-whiptail --infobox "Setting browser privacy settings and add-ons..." 7 60
+whiptail --infobox "Setting browser settings and add-ons..." 7 60
 
 browserdir="/home/$name/.librewolf"
 profilesini="$browserdir/profiles.ini"
@@ -358,8 +312,6 @@ sudo -u "$name" librewolf --headless >/dev/null 2>&1 &
 sleep 1
 profile="$(sed -n "/Default=.*.default-release/ s/.*=//p" "$profilesini")"
 pdir="$browserdir/$profile"
-
-[ -d "$pdir" ] && makeuserjs
 
 [ -d "$pdir" ] && installffaddons
 
